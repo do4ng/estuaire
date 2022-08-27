@@ -1,0 +1,34 @@
+{
+  "name": "estuaire",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "files": [
+    "./dist",
+    "./types"
+  ],
+  "types": "./types",
+  "devDependencies": {
+    "@types/node": "^17.0.18",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "colors": "^1.4.0",
+    "esbuild": "^0.15.5",
+    "esbuild-node-externals": "^1.4.1",
+    "fast-glob": "^3.2.11"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "types": "npx tsc",
+    "test": "node dist/bin.js"
+  },
+  "bin": {
+    "estuaire": "./dist/bin.js"
+  }
+}
