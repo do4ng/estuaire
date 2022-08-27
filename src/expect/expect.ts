@@ -24,6 +24,11 @@ export interface Expect<T> {
   toIncludes: (expected: any) => void; // array or string
 
   toContain: (expected: any) => void; // array
+
+  toBeGreaterThan: (expected: number) => void;
+  toBeGreaterThanOrEqual: (expected: number) => void;
+  toBeLessThan: (expected: number) => void;
+  toBeLessThanOrEqual: (expected: number) => void;
 }
 
 export interface MatchersObject {

@@ -8,3 +8,7 @@ import './toContain';
 import './toEqual';
 import './toIncludes';
 import './toMatch';
+import './toBeGreaterThan';
+import './toBeGreaterThanOrEqual';
+import './toBeLessThan';
+import './toBeLessThanOrEqual';
