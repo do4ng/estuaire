@@ -1,4 +1,4 @@
-## rules
+# rules
 
 `expect()` of estuaire relies on `describe()` (not files).
 So `expect()` requires `describe()`

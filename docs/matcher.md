@@ -1,6 +1,6 @@
 # matchers
 
-- [example](../test/matchers.test.ts)
+- [example](../test/matcher.test.ts)
 - [custom matcher](./custom-matcher.md)
 
 ```ts
@@ -31,5 +31,15 @@ describe('matchers', () => {
 
   expect(array).toIncludes('ping');
   expect(array).toContain('ping');
+
+  // number
+
+  const number = 2 + 2;
+
+  expect(number).toBeGreaterThan(3);
+  expect(number).toBeGreaterThanOrEqual(4);
+
+  expect(number).toBeLessThan(5);
+  expect(number).toBeLessThanOrEqual(4);
 });
 ```
