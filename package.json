@@ -1,12 +1,17 @@
 {
   "name": "estuaire",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "main": "./dist/index.js",
   "files": [
-    "./dist",
-    "./types"
+    "dist",
+    "types"
   ],
-  "types": "./types",
+  "license": "MIT",
+  "types": "./types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/do4ng/estuaire"
+  },
   "devDependencies": {
     "@types/node": "^17.0.18",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
