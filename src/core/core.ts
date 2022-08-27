@@ -67,7 +67,9 @@ export function progressWithHistory(file: string) {
       });
       console.log();
     } else if (!data[openedDescribe]) {
-      log.error(new Error('Cannot find opened describe'));
+      log.error(
+        new Error('Cannot find opened describe. see more - https://github.com/do4ng/estuaire/blob/main/docs/rules.md ')
+      );
     } else {
       // expect
       data[openedDescribe].push(history);
