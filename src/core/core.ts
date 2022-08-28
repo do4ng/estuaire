@@ -1,12 +1,13 @@
+/* eslint-disable indent */
 import glob from 'fast-glob';
 import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import 'colors';
+import { execSync } from 'node:child_process';
 import { bundle } from '../bundle';
 import { Config } from '../config';
 import { getHistory, historyData, resetHistory } from '../history';
 import { randomString } from '../utils/random';
-import text from '../utils/text';
 import { occurError } from '../error';
 import terminalCenter from '../utils/center';
 import box from '../box';
@@ -16,13 +17,37 @@ function insertSpy(id: string) {
   let file = readFileSync(join(__dirname, `../temp/test.${id}.js`)).toString();
   file = `/*${id}*/
 
-${file}`;
-  writeFileSync(join(__dirname, `../temp/test.${id}.js`), file);
+function __estuaire_done() {
+  require("fs").writeFileSync("${join(__dirname, '../temp/test.json').replace(
+    /\\/g,
+    '/'
+  )}", JSON.stringify(global.$estuaireHistory)); // return result
 }
 
-const req = (t) => {
-  require(text(t));
-};
+/*core*/
+
+${file}
+
+/*if done*/
+
+const __estuaire_start_count = global.$estuaireCount;
+
+// promise func
+if (__estuaire_start_count <= 0) {
+  const __estuaire_interval = setInterval(() => {
+    __estuaire_done();
+    if (global.$estuaireCount === __estuaire_start_count * 2) {
+      clearInterval(__estuaire_interval);
+      global.$estuaireCount = 0;
+    }
+  }, 10)
+} else {
+  __estuaire_done();
+}
+
+`;
+  writeFileSync(join(__dirname, `../temp/test.${id}.js`), file);
+}
 
 export function progressWithHistory(file: string) {
   const localHistory = getHistory();
@@ -60,7 +85,7 @@ export function progressWithHistory(file: string) {
       data[history.title].forEach((result, index) => {
         // failed
         if (!result.result) {
-          console.log(`> ${history.title} (index: ${index.toString().bold})`.gray);
+          console.log(`> ${history.title} (index: ${(index + 1).toString().bold})`.gray);
 
           occurError(result.data.received, result.data.expected);
         }
@@ -98,7 +123,13 @@ export async function core(config: Config) {
       insertSpy(random);
 
       // run
-      req(`../temp/test.${random}`);
+      execSync(`node ${join(process.cwd(), `./temp/test.${random}`)}.js`, {
+        stdio: 'inherit',
+      });
+
+      const output = readFileSync(join(__dirname, '../temp/test.json')).toString();
+
+      global.$estuaireHistory = JSON.parse(output);
 
       // print result
       const result = progressWithHistory(file);

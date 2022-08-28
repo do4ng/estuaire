@@ -1,6 +1,6 @@
 function createHistory() {
   // if history array not defined
-  if (!global.$astoundHistory) global.$astoundHistory = [];
+  if (!global.$estuaireHistory) global.$estuaireHistory = [];
 }
 
 export interface historyData {
@@ -16,17 +16,17 @@ export interface historyData {
 export function pushHistory(data: historyData) {
   createHistory();
 
-  global.$astoundHistory.push(JSON.stringify(data));
+  global.$estuaireHistory.push(JSON.stringify(data));
 }
 
 export function getHistory(): string[] {
   createHistory();
 
-  return global.$astoundHistory;
+  return global.$estuaireHistory;
 }
 
 export function resetHistory() {
   createHistory();
 
-  global.$astoundHistory = [];
+  global.$estuaireHistory = [];
 }

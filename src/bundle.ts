@@ -1,4 +1,4 @@
-import esbuild from 'esbuild';
+import esbuild, { BuildOptions } from 'esbuild';
 import externals from 'esbuild-node-externals';
 
 import path from 'node:path';
@@ -12,14 +12,12 @@ export function bundle(target: string, config?: Config, out?: string): Promise<{
     if (!config) config = {};
 
     const dist = path.join(__dirname, '../', 'temp');
-    const cfg: any = {
+    const cfg: BuildOptions = {
       entryPoints: [target],
       outfile: path.join(dist, out || 'out.js'),
-
       bundle: true,
-      minify: true,
-
       platform: 'node',
+      target: 'esnext',
 
       // customized esbuild config
       ...(config.esbuild || {}),
