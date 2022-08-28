@@ -12,3 +12,4 @@ import './toBeGreaterThan';
 import './toBeGreaterThanOrEqual';
 import './toBeLessThan';
 import './toBeLessThanOrEqual';
+import './toBeInstanceOf';
