@@ -2,9 +2,11 @@
 
 super fast javascript testing tool
 
+- [rules](./rules.md)
 - [matcher](./matcher.md)
 - [custom matcher](./matcher.md)
-- [rules](./rules.md)
+- [config](./config.md)
+- [promise](./promise.md)
 
 ## Features
 
