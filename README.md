@@ -1,8 +1,10 @@
 # estuaire
 
-super fast javascript testing tool
+⚡ super fast javascript testing tool ⚡
 
-[github](https://github.com/do4ng/estuaire)
+---
+
+[📦 repository](https://github.com/do4ng/estuaire) [📜 documents](https://github.com/do4ng/estuaire/tree/main/docs)
 
 ## Features
 
