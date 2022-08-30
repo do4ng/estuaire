@@ -29,6 +29,8 @@ export interface Expect<T> {
   toBeGreaterThanOrEqual: (expected: number) => void;
   toBeLessThan: (expected: number) => void;
   toBeLessThanOrEqual: (expected: number) => void;
+
+  toBeInstanceOf: (expected: any) => void;
 }
 
 export interface MatchersObject {
