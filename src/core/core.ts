@@ -9,7 +9,7 @@ import { Config } from '../config';
 import { getHistory, historyData, resetHistory } from '../history';
 import { randomString } from '../utils/random';
 import { occurError } from '../error';
-import terminalCenter from '../utils/center';
+import terminalCenter from '../utils/output';
 import box from '../box';
 import log from '../log';
 
