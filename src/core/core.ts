@@ -122,7 +122,7 @@ export async function core(config: Config) {
       insertSpy(random);
 
       // run
-      execSync(`node ${join(process.cwd(), `./temp/test.${random}`)}.js`, {
+      execSync(`node ${join(__dirname, `../temp/test.${random}`)}.js`, {
         stdio: 'inherit',
       });
 
