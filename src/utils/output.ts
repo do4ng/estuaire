@@ -10,5 +10,5 @@ export default function terminalCenter(text: string): string {
     repeatNum -= 1;
   }
 
-  return ` ${'='.repeat(repeatNum).gray} ${text} ${'='.repeat(repeatNum).gray} `;
+  return `${text}`;
 }
