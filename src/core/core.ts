@@ -24,27 +24,25 @@ function __estuaire_done() {
   )}", JSON.stringify(global.$estuaireHistory)); // return result
 }
 
+global.$estuaireTesting = function () {
+  const __estuaire_start_count = global.$estuaireCount;
+
+  // promise func
+  if (__estuaire_start_count <= 0) {
+    const __estuaire_interval = setInterval(() => {
+      __estuaire_done();
+      if (global.$estuaireCount === __estuaire_start_count * 2) {
+        clearInterval(__estuaire_interval);
+        global.$estuaireCount = 0;
+      }
+    }, 10)
+  } else {
+    __estuaire_done();
+  }
+}
 /*core*/
 
 ${file}
-
-/*if done*/
-
-const __estuaire_start_count = global.$estuaireCount;
-
-// promise func
-if (__estuaire_start_count <= 0) {
-  const __estuaire_interval = setInterval(() => {
-    __estuaire_done();
-    if (global.$estuaireCount === __estuaire_start_count * 2) {
-      clearInterval(__estuaire_interval);
-      global.$estuaireCount = 0;
-    }
-  }, 10)
-} else {
-  __estuaire_done();
-}
-
 `;
   writeFileSync(join(__dirname, `../temp/test.${id}.js`), file);
 }
@@ -90,7 +88,6 @@ export function progressWithHistory(file: string) {
           occurError(result.data.received, result.data.expected);
         }
       });
-      console.log();
     } else if (!data[openedDescribe]) {
       log.error(
         new Error('Cannot find opened describe. see more - https://github.com/do4ng/estuaire/blob/main/docs/rules.md ')
@@ -112,6 +109,8 @@ export async function core(config: Config) {
   const startTime = performance.now(); // timer start
 
   const dir = await glob(config.includes);
+
+  console.log();
 
   await Promise.all(
     dir.map(async (file) => {
@@ -142,6 +141,8 @@ export async function core(config: Config) {
       rmSync(join(__dirname, `../temp/test.${random}.js`));
     })
   );
+
+  console.log();
 
   const printResult = [];
 
