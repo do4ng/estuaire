@@ -16,7 +16,7 @@ export interface historyData {
 export function pushHistory(data: historyData) {
   createHistory();
 
-  global.$estuaireHistory.push(JSON.stringify(data));
+  global.$estuaireHistory.push(data);
 }
 
 export function getHistory(): string[] {
