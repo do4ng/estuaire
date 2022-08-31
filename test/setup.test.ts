@@ -1,17 +1,17 @@
 import { expect } from '../src/expect';
 import { describe } from '../src/describe';
-import { beforeEach, afterEach } from '../src/setup/setup';
+import { beforeEach } from '../src/setup/setup';
 
 let count = 10;
 
 beforeEach(() => {
-  count = 20;
+  count += 1;
 });
 
-afterEach(() => {
-  count = 10;
+describe('setup each', () => {
+  expect(count).toBe(11);
 });
 
-describe('count (setup test)', () => {
-  expect(count).toBe(20);
+describe('setup each (2)', () => {
+  expect(count).toBe(12);
 });

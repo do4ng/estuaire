@@ -4,9 +4,8 @@ import { beforeEach, afterEach } from '../src/setup/setup';
 
 let count = 10;
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   count = 20;
-  done();
 });
 
 afterEach(async () => {
