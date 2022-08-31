@@ -24,25 +24,47 @@ function __estuaire_done() {
   )}", JSON.stringify(global.$estuaireHistory)); // return result
 }
 
-global.$estuaireTesting = function () {
-  const __estuaire_start_count = global.$estuaireCount;
-
-  // promise func
-  if (__estuaire_start_count <= 0) {
-    const __estuaire_interval = setInterval(() => {
-      __estuaire_done();
-      if (global.$estuaireCount === __estuaire_start_count * 2) {
-        clearInterval(__estuaire_interval);
-        global.$estuaireCount = 0;
-      }
-    }, 10)
-  } else {
-    __estuaire_done();
-  }
+function __estuaire_init () {
+  global.estuaire_tests = [];
+  global.estuaire_tests_only = [];
+  global.$estuaireHistory = [];
+  global.estuaire_enable_tests_only = false;
 }
-/*core*/
+
+async function __estuaire_process() {
+  var __estuaire_tests = global.estuaire_tests;
+
+  if (global.estuaire_all_before) await global.estuaire_all_before();
+  if (global.estuaire_enable_tests_only) {
+    for await (const test of estuaire_tests_only) {
+      if (global.estuaire_each_before) await global.estuaire_each_before();
+      global.$estuaireHistory.push({ type: "start-describe", title: test.title });
+      await test.fn();
+      global.$estuaireHistory.push({ type: "end-describe", title: test.title });
+      if (global.estuaire_each_after) await global.estuaire_each_after();
+    }
+  } else {
+    for await (const test of __estuaire_tests) {
+      if (global.estuaire_each_before) await global.estuaire_each_before();
+      global.$estuaireHistory.push({ type: "start-describe", title: test.title });
+      await test.fn();
+      global.$estuaireHistory.push({ type: "end-describe", title: test.title });
+      if (global.estuaire_each_after) await global.estuaire_each_after();
+    }
+  }
+  
+  if (global.estuaire_all_after) await global.estuaire_all_after();
+
+  __estuaire_done();
+}
+
+__estuaire_init();
 
 ${file}
+
+__estuaire_process();
+
+
 `;
   writeFileSync(join(__dirname, `../temp/test.${id}.js`), file);
 }
@@ -59,7 +81,7 @@ export function progressWithHistory(file: string) {
   let openedDescribe = '';
 
   localHistory.forEach((el) => {
-    const history: historyData = JSON.parse(el);
+    const history: historyData = typeof el === 'string' ? JSON.parse(el) : el;
 
     if (history.type === 'start-describe') {
       // init
@@ -86,11 +108,17 @@ export function progressWithHistory(file: string) {
           console.log(`> ${history.title} (index: ${(index + 1).toString().bold})`.gray);
 
           occurError(result.data.received, result.data.expected);
+          console.log();
         }
       });
+
+      data[history.title] = [];
+      openedDescribe = '';
     } else if (!data[openedDescribe]) {
       log.error(
-        new Error('Cannot find opened describe. see more - https://github.com/do4ng/estuaire/blob/main/docs/rules.md ')
+        new Error(
+          `Cannot find opened describe (${openedDescribe}). see more - https://github.com/do4ng/estuaire/blob/main/docs/rules.md `
+        )
       );
     } else {
       // expect
