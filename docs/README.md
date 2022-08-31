@@ -2,19 +2,13 @@
 
 super fast javascript testing tool
 
----
-
-> This package provides only basic functions.  
-> If you want more features, you have to use another package such as jest..
-
----
-
 - [intro](../README.md)
-- [rules](./rules.md)
+- [config](./config.md)
 - [matcher](./matcher.md)
 - [custom matcher](./matcher.md)
-- [config](./config.md)
 - [promise](./promise.md)
+- [method](./method.md)
+- [setup](./setup.md)
 
 ## Features
 
