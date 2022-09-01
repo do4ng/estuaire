@@ -45,4 +45,4 @@ function info(message: string) {
   console.log(`${'(i)'.blue.bold} ${message.bold}`);
 }
 
-export default { success, info, error, warn, parseError };
+export { success, info, error, warn, parseError };
