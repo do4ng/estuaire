@@ -11,7 +11,7 @@ import { randomString } from '../utils/random';
 import { occurError } from '../error';
 import terminalCenter from '../utils/output';
 import box from '../box';
-import log from '../log';
+import * as log from '../log';
 
 function insertSpy(id: string) {
   let file = readFileSync(join(__dirname, `../temp/test.${id}.js`)).toString();
@@ -29,12 +29,14 @@ function __estuaire_init () {
   global.estuaire_tests_only = [];
   global.$estuaireHistory = [];
   global.estuaire_enable_tests_only = false;
+  global.estuaire_describe_tests = [];
 }
 
 async function __estuaire_process() {
   var __estuaire_tests = global.estuaire_tests;
 
   if (global.estuaire_all_before) await global.estuaire_all_before();
+
   if (global.estuaire_enable_tests_only) {
     for await (const test of estuaire_tests_only) {
       if (global.estuaire_each_before) await global.estuaire_each_before();
@@ -63,19 +65,19 @@ __estuaire_init();
 ${file}
 
 __estuaire_process();
-
-
 `;
   writeFileSync(join(__dirname, `../temp/test.${id}.js`), file);
 }
 
-export function progressWithHistory(file: string) {
+export function progressWithHistory(file: string, id: string) {
+  const splitted = file.split('/');
   const localHistory = getHistory();
 
   const data = {};
   const total = {
     pass: 0,
     failed: 0,
+    failedData: [],
   };
 
   let openedDescribe = '';
@@ -92,21 +94,43 @@ export function progressWithHistory(file: string) {
     } else if (history.type === 'end-describe') {
       openedDescribe = '';
 
-      if (data[history.title].filter((pass) => pass.result === false).length !== 0) {
-        console.log(terminalCenter(`${' FAILED '.bgRed.white.bold} ${history.title.bold} ${`(${file})`.gray}`));
+      const failed = data[history.title].filter((pass) => pass.result === false);
+
+      if (failed.length !== 0) {
+        console.log(
+          terminalCenter(
+            `${' FAIL '.bgRed.white.bold} ${history.title.bold} ${
+              `[ ${splitted.slice(0, 2).join('/')}/${splitted.slice(2).join('/').red.bold} ]`.gray
+            }`
+          )
+        );
 
         total.failed += 1;
       } else {
-        console.log(terminalCenter(`${' PASS '.bgGreen.white.bold} ${history.title.bold} ${`(${file})`.gray}`));
-
         total.pass += 1;
       }
 
-      data[history.title].forEach((result, index) => {
+      data[history.title].forEach((result) => {
         // failed
         if (!result.result) {
-          console.log(`> ${history.title} (index: ${(index + 1).toString().bold})`.gray);
+          console.log(`${file}> ${history.title.white.bold} \n`.dim.yellow);
 
+          const occurPos: { x; y } = result.line;
+
+          const bundled = readFileSync(join(__dirname, '../temp', `test.${id}.js`)).toString();
+          const lines = bundled.split('\n');
+
+          const errorLines = [lines[occurPos.y - 1], lines[occurPos.y], lines[occurPos.y + 1]];
+
+          errorLines.forEach((line, index) => {
+            console.log(`  ${`${index + 1}| `.gray} ${line.italic}`);
+
+            if (index === 0) {
+              console.log(`   ${'|'.gray} ${' '.repeat(occurPos.x)}${'^'.red} `);
+            }
+          });
+
+          console.log();
           occurError(result.data.received, result.data.expected);
           console.log();
         }
@@ -138,8 +162,6 @@ export async function core(config: Config) {
 
   const dir = await glob(config.includes);
 
-  console.log();
-
   await Promise.all(
     dir.map(async (file) => {
       const random = randomString(6);
@@ -159,7 +181,7 @@ export async function core(config: Config) {
       global.$estuaireHistory = JSON.parse(output);
 
       // print result
-      const result = progressWithHistory(file);
+      const result = progressWithHistory(file, random);
 
       total.failed += result.failed;
       total.pass += result.pass;

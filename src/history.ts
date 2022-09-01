@@ -11,6 +11,7 @@ export interface historyData {
     expected: string;
     received: string;
   };
+  line?: { x: number; y: number };
 }
 
 export function pushHistory(data: historyData) {

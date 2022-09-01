@@ -1,4 +1,4 @@
-import { expectFunc as expect } from '../expect/expect';
+import { expect } from '../expect/expect';
 
 expect.extend({
   toIncludes: (received, expected) => {

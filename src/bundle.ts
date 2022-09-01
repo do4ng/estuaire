@@ -4,7 +4,7 @@ import externals from 'esbuild-node-externals';
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
 
-import log from './log';
+import * as log from './log';
 import { Config } from './config';
 
 export function bundle(target: string, config?: Config, out?: string): Promise<{ path: string; source: string }> {
@@ -18,6 +18,7 @@ export function bundle(target: string, config?: Config, out?: string): Promise<{
       bundle: true,
       platform: 'node',
       target: 'esnext',
+      keepNames: true,
 
       // customized esbuild config
       ...(config.esbuild || {}),

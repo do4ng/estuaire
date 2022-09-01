@@ -2,6 +2,7 @@
 /* eslint-disable import/no-mutable-exports */
 
 import { pushHistory } from '../history';
+import getLine from '../utils/getLine';
 
 export interface CustomMatcherOutput {
   pass: boolean;
@@ -39,7 +40,7 @@ export interface MatchersObject {
 
 export let matchers = {};
 
-function expectFunc<T>(received: T): Expect<T> {
+function expect<T>(received: T): Expect<T> {
   let customMatchers = {};
   let notMatchers = {};
 
@@ -52,7 +53,12 @@ function expectFunc<T>(received: T): Expect<T> {
         if (received instanceof Object) received = JSON.stringify(received) as any;
         if (expected instanceof Object) expected = JSON.stringify(expected) as any;
 
-        pushHistory({ type: 'expect', result: result.pass, data: { received: received as any, expected } });
+        pushHistory({
+          type: 'expect',
+          result: result.pass,
+          data: { received: received as any, expected },
+          line: getLine(new Error()),
+        });
 
         return result;
       },
@@ -69,7 +75,12 @@ function expectFunc<T>(received: T): Expect<T> {
         if (received instanceof Object) received = JSON.stringify(received) as any;
         if (expected instanceof Object) expected = JSON.stringify(expected) as any;
 
-        pushHistory({ type: 'expect', result: result.pass, data: { received: received as any, expected } });
+        pushHistory({
+          type: 'expect',
+          result: result.pass,
+          data: { received: received as any, expected },
+          line: getLine(new Error()),
+        });
 
         return result;
       },
@@ -84,13 +95,13 @@ function expectFunc<T>(received: T): Expect<T> {
   return customMatchers as Expect<T>;
 }
 
-expectFunc.extend = (matcher: MatchersObject) => {
+expect.extend = (matcher: MatchersObject) => {
   matchers = {
     ...matchers,
     ...matcher,
   };
 };
 
-expectFunc.matchers = () => matchers;
+expect.matchers = () => matchers;
 
-export { expectFunc };
+export { expect };
