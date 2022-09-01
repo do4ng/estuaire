@@ -55,11 +55,10 @@ export async function getConfig(): Promise<Config> {
       if (existsSync(target)) {
         await bundle(target);
 
-        config = require(text('../temp/out')).default as any;
+        config = (require(text('../temp/out')).default as any) || config;
       }
     })
   );
-
   if (!config.includes) config.includes = [];
 
   config.includes.push(...includes);
