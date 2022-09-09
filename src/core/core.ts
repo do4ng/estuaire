@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import glob from 'fast-glob';
-import { readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { join, parse } from 'node:path';
 import 'colors';
 import { execSync } from 'node:child_process';
 import { bundle } from '../bundle';
@@ -13,10 +13,12 @@ import terminalCenter from '../utils/output';
 import box from '../box';
 import * as log from '../log';
 
-function insertSpy(id: string) {
+function insertSpy(id: string, f: string) {
   let file = readFileSync(join(__dirname, `../temp/test.${id}.js`)).toString();
   file = `/*${id}*/
 
+var __dirname = "${parse(f).dir.replace(/"/g, "'")}";
+var __filename = "${f.replace(/"/g, "'")}";
 function __estuaire_done() {
   require("fs").writeFileSync("${join(__dirname, '../temp/test.json').replace(
     /\\/g,
@@ -154,6 +156,7 @@ export function progressWithHistory(file: string, id: string) {
 }
 
 export async function core(config: Config) {
+  if (existsSync(join(__dirname, '../temp'))) rmSync(join(__dirname, '../temp'), { recursive: true });
   const total = {
     pass: 0,
     failed: 0,
@@ -169,7 +172,7 @@ export async function core(config: Config) {
       // bundle file
       await bundle(file, config, `test.${random}.js`);
 
-      insertSpy(random);
+      insertSpy(random, join(process.cwd(), file).replace(/\\/g, '/'));
 
       // run
       execSync(`node ${join(__dirname, `../temp/test.${random}`)}.js`, {
