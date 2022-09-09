@@ -19,6 +19,7 @@ export function bundle(target: string, config?: Config, out?: string): Promise<{
       platform: 'node',
       target: 'esnext',
       keepNames: true,
+      sourcemap: 'linked',
 
       // customized esbuild config
       ...(config.esbuild || {}),
